@@ -19,7 +19,6 @@ func removeIndex(s []todo.Todo, index int8) []todo.Todo {
 // DeleteTodo will handle deleting todos.
 func DeleteTodo(ts *[]todo.Todo, defered func()) {
 	defer defered()
-
 	// Make sure the user has some todos.
 	if len(*ts) > 0 {
 		ListTodos(*ts, false, defered)
@@ -31,6 +30,12 @@ func DeleteTodo(ts *[]todo.Todo, defered func()) {
 			fmt.Println("Enter a number.")
 			return
 		}
+
+		if index > int64(len(*ts)) || index < 1 {
+			fmt.Println("That is not a todo number.")
+			return
+		}
+
 		fmt.Printf("Deleted '%v'.\n", (*ts)[index-1].Desc)
 		*ts = removeIndex(*ts, int8(index-1))
 
@@ -58,6 +63,10 @@ func EditTodo(ts *[]todo.Todo, defered func()) {
 		fmt.Println("What new text do you want?")
 		newText, _ := bufio.NewReader(os.Stdin).ReadString('\n')
 		newText = strings.TrimSuffix(newText, "\n")
+		if index > int64(len(*ts)) || index < 1 {
+			fmt.Println("That is not a todo number.")
+			return
+		}
 		fmt.Printf("Edited '%v' to be '%v'.\n", (*ts)[index-1].Desc, newText)
 		(*ts)[index-1].Desc = newText
 		(*ts)[index-1].Edited = true
@@ -71,7 +80,6 @@ func EditTodo(ts *[]todo.Todo, defered func()) {
 
 // ListTodos lists all todos.
 func ListTodos(slice []todo.Todo, isDefer bool /* isDefer should be false when this function is being called inside an option. */, defered func()) {
-
 	/*
 		listTodos(slice []Todo, isDefer bool) is called inside of two functions, which are already defering options().
 		This if statement allows us to make sure options() isn't called when it isn't wanted through the isDefer paramter.
@@ -97,6 +105,38 @@ func ListTodos(slice []todo.Todo, isDefer bool /* isDefer should be false when t
 		fmt.Println("You have no todos. Add some.")
 		return
 	}
+}
+
+func CopyTodo(ts *[]todo.Todo, defered func()) {
+	defer defered()
+
+	if len(*ts) > 0 {
+		ListTodos(*ts, false, defered)
+		var choice string
+		fmt.Println("Which todo number do you want to copy?")
+		fmt.Scanln(&choice)
+		index, err := strconv.ParseInt(choice, 10, 64)
+		if err != nil {
+			fmt.Println("Please enter a number!")
+			return
+		}
+
+		if index > int64(len(*ts)) || index < 1 {
+			fmt.Println("That is not a todo number.")
+			return
+		}
+
+		indexObj := (*ts)[index-1]
+
+		newTodo := todo.Todo{Desc: indexObj.Desc, TimePub: indexObj.TimePub, TimeEdited: indexObj.TimeEdited, Edited: indexObj.Edited}
+
+		fmt.Printf("Copying '%v'.\n", indexObj.Desc)
+		*ts = append(*ts, newTodo)
+	} else {
+		fmt.Println("You have no todos. Add some.")
+		return
+	}
+
 }
 
 // AddTodo will handle adding todos.

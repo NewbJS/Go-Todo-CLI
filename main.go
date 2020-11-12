@@ -8,7 +8,6 @@ import (
 )
 
 func main() {
-
 	fmt.Println(ascii.ASCIITitle)
 	fmt.Println("Welcome to the todo list CLI!")
 	options.Options()
