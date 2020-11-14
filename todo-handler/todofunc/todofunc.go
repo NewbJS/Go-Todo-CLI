@@ -107,6 +107,7 @@ func ListTodos(slice []todo.Todo, isDefer bool /* isDefer should be false when t
 	}
 }
 
+// CopyTodo copies a todo.
 func CopyTodo(ts *[]todo.Todo, defered func()) {
 	defer defered()
 
