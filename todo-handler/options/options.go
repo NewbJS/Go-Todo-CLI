@@ -2,6 +2,8 @@ package options
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
 
 	"github.com/NewbJS/Go-Todo-CLI/todo-handler/todo"
 	"github.com/NewbJS/Go-Todo-CLI/todo-handler/todofunc"
@@ -11,7 +13,6 @@ var todoSlice []todo.Todo = make([]todo.Todo, 0)
 
 // Options should be defered on every function, to make sure the program stays running.
 func Options() {
-
 	optList := [6]string{"List todos", "Add todo", "Edit todo", "Copy todo", "Delete todo", "Quit"}
 	fmt.Println("What would you like to do next? Your options are:")
 	for i := 0; i < len(optList); i++ {
@@ -25,6 +26,9 @@ func Options() {
 	var choice string
 	fmt.Scanln(&choice)
 	fmt.Print("\n")
+	c := exec.Command("clear")
+	c.Stdout = os.Stdout
+	c.Run()
 	switch choice {
 	case "1":
 		todofunc.ListTodos(todoSlice, true, Options)
