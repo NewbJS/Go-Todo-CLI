@@ -54,7 +54,7 @@ func EditTodo(ts *[]todo.Todo, defered func()) {
 		ListTodos(*ts, false, defered)
 		fmt.Println("Which todo number would you like to edit?")
 		choice, _ := bufio.NewReader(os.Stdin).ReadString('\n')
-		choice = strings.TrimSuffix(choice, "\n")
+		choice = strings.TrimSpace(choice)
 		index, err := strconv.ParseInt(choice, 10, 64)
 		if err != nil {
 			fmt.Println("Not a number.")
@@ -62,7 +62,7 @@ func EditTodo(ts *[]todo.Todo, defered func()) {
 		}
 		fmt.Println("What new text do you want?")
 		newText, _ := bufio.NewReader(os.Stdin).ReadString('\n')
-		newText = strings.TrimSuffix(newText, "\n")
+		newText = strings.TrimSpace(newText)
 		if index > int64(len(*ts)) || index < 1 {
 			fmt.Println("That is not a todo number.")
 			return
@@ -151,8 +151,9 @@ func AddTodo(ts *[]todo.Todo, defered func()) {
 		fmt.Println("An error occured while reading input. Please try again", err)
 		return
 	}
-	newDesc = strings.TrimSuffix(newDesc, "\n")
+	newDesc = strings.TrimSpace(newDesc)
 	newTodo := todo.Todo{Desc: newDesc, TimePub: time.Now().Format(time.UnixDate), TimeEdited: "", Edited: false}
 	*ts = append(*ts, newTodo)
-	fmt.Printf("Successfully added '%v' to your todos.\n", newTodo.Desc)
+
+	fmt.Printf("Successfully added '%v' to your todos.\n", newDesc)
 }
